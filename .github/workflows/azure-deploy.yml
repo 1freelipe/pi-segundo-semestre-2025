@@ -23,6 +23,16 @@ jobs:
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@v3
 
+      - name: 'Setup PHP and Composer'
+        uses: shivammathur/setup-php@v2
+        with: 
+          php-version: '8.2'
+          tools: composer:v2
+      - name: 'Install PHP Dependencies (Composer)'
+        run: |
+          cd ./projeto-oficina/backend
+          composer install --no-dev --prefer-dist
+
       # 3. Faz o deploy (Note que NÃO há mais 'publish-profile')
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
