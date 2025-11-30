@@ -1,14 +1,16 @@
 <?php
-
 header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json; charset=UTF-8");
+header("Content-type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Methods: POST, GET");
+header("Access-Control-Max-Age: 3600");
+header("Access-Control-Allow-Headers: Content-type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-require_once "../config/db.php";
+require_once '../config/db.php';
 
 $dados = json_decode(file_get_contents("php://input"), true);
 
-$login = trim($dados["login"] ?? "");
-$senha = $dados["senha"] ?? "";
+$login = trim($dados["FUN_LOGIN"] ?? "");
+$senha = $dados["FUN_SENHA"] ?? "";
 
 if (!$login || !$senha) {
     echo json_encode([
@@ -18,12 +20,12 @@ if (!$login || !$senha) {
     exit;
 }
 
-$stmt = $pdo->prepare("
+$stmt = $pdo->prepare('
     SELECT FUN_ID, FUN_LOGIN, FUN_SENHA, FUN_ATIVO
-    FROM funcionario
+    FROM tb_funcionario
     WHERE FUN_LOGIN = :login
     LIMIT 1
-");
+');
 $stmt->bindParam(":login", $login);
 $stmt->execute();
 
@@ -48,7 +50,7 @@ if ($usuario["FUN_ATIVO"] != 1) {
 if (!password_verify($senha, $usuario["FUN_SENHA"])) {
     echo json_encode([
         "success" => false,
-        "message" => "Senha incorreta."
+        "message" => "Senha incorreta.", 'usuario' => $usuario, 'senha' => $senha
     ]);
     exit;
 }
