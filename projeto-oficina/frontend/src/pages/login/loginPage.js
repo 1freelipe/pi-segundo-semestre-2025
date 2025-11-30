@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import services from '../../services/axios';
+import { toast } from 'react-toastify';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../../contexts/authContexts';
+
+import axios from '../../services/axios';
 import './css/login.css';
 
-// import { Link } from 'react-router-dom';
-
 export default function LoginPage() {
-  // 1. Estados para controlar os valores dos inputs
-  const [login, setLogin] = useState(''); // <--- antes era "nome"
+  const [login, setLogin] = useState('');
   const [senha, setSenha] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { login: authLogin } = useAuth();
 
   /* Effect apenas para o link do bootstrap */
   useEffect(() => {
@@ -38,6 +42,14 @@ export default function LoginPage() {
     };
   }, []);
 
+  useEffect(() => {
+    if (location.state && location.state.message) {
+      toast.warn(location.state.message);
+    }
+
+    navigate(location.pathname, { replace: true, state: {} });
+  }, [location, navigate, location.pathname]);
+
   // 2. Função que lida com o envio do formulário
   const handleSubmit = async (event) => {
     // Previne o recarregamento padrão da página
@@ -45,20 +57,22 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const response = await services.post('/api/loginUser.php', {
-        FUN_LOGIN: login, // <-- campo enviado ao backend
-        FUN_SENHA: senha, // <-- campo enviado ao backend
+      const response = await axios.post('/login/loginUser.php', {
+        FUN_LOGIN: login,
+        FUN_SENHA: senha,
       });
 
-      // 4. Lógica de sucesso
-      console.log('Login com sucesso:', response.data);
-      // Ex: Salvar o token e redirecionar
-      // localStorage.setItem('user_token', response.data.token);
-      // window.location.href = '/dashboard'; // (Use o redirecionamento do React Router se tiver)
+      if (response.data.success) {
+        authLogin(response.data.usuario);
+        toast.success(response.data.message);
+        localStorage.setItem('user_token', response.data.token);
+        navigate('/');
+      } else {
+        toast.error(response.data.message);
+      }
     } catch (error) {
       // 5. Lógica de erro
-      console.error('Erro ao fazer login:', error);
-      alert('Usuário ou senha incorretos.');
+      toast.error('Usuário ou senha incorretos.', error);
     } finally {
       setLoading(false);
     }
@@ -82,7 +96,7 @@ export default function LoginPage() {
         </div>
 
         {/* 7. O <form> agora chama a função 'handleSubmit' */}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} action="" method="POST">
           <div className="mb-3">
             {/* 'for' vira 'htmlFor' */}
             {/* eslint-disable-next-line */}
@@ -133,12 +147,9 @@ export default function LoginPage() {
           <small className="text-secondary">
             Não possui conta?
             {/* 9. Troque o <a> por <Link> se estiver usando React Router */}
-            <a
-              href="./loginCadastro.html"
-              className="text-danger text-decoration-none"
-            >
+            <Link to="/cadastro" className="text-danger text-decoration-noe">
               Registrar-se
-            </a>
+            </Link>
             {/* Ex: <Link to="/cadastro" className="text-danger text-decoration-none">Registrar-se</Link> */}
           </small>
         </div>

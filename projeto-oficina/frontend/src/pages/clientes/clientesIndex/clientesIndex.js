@@ -19,6 +19,26 @@ export default function ClientesIndex() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
+  const formatCPF = (cpfString) => {
+    const digitos = cpfString.replace(/[^\d]/g, '');
+
+    if (digitos.length === 11) {
+      return digitos.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    }
+
+    return cpfString;
+  };
+
+  const formatNumber = (numberString) => {
+    const digitos = numberString.replace(/[^\d]/g, '');
+
+    if (digitos.length === 11) {
+      return digitos.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    }
+
+    return numberString;
+  };
+
   const handleCadastroClick = () => {
     navigate('/clientes/store');
   };
@@ -189,9 +209,9 @@ export default function ClientesIndex() {
                 <index.Tr key={cliente.CLI_ID}>
                   <index.Td>{cliente.CLI_ID}</index.Td>
                   <index.Td>{cliente.CLI_NOME}</index.Td>
-                  <index.Td>{cliente.CLI_CPF}</index.Td>
+                  <index.Td>{formatCPF(cliente.CLI_CPF)}</index.Td>
                   <index.Td>{cliente.CLI_EMAIL}</index.Td>
-                  <index.Td>{cliente.CLI_TELEFONE}</index.Td>
+                  <index.Td>{formatNumber(cliente.CLI_TELEFONE)}</index.Td>
                   <index.Td>{cliente.CLI_ATIVO === 1 ? 'Sim' : 'Não'}</index.Td>
                   <index.Td>
                     <Link to={`/clientes/edit/${cliente.CLI_ID}`}>

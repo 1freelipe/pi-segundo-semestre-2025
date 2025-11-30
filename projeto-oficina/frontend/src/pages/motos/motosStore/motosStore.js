@@ -11,7 +11,7 @@ import { FaMotorcycle } from 'react-icons/fa6';
 import { IoColorPaletteOutline } from 'react-icons/io5';
 import { MdOutlineClear } from 'react-icons/md';
 import { toast } from 'react-toastify';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import * as newMotos from './styled';
@@ -26,7 +26,7 @@ export default function MotosStore() {
     navigate('/motos');
   };
 
-  const { register, handleSubmit, reset } = useForm({
+  const { register, handleSubmit, reset, control } = useForm({
     resolver: yupResolver(motosSchema),
   });
 
@@ -75,7 +75,9 @@ export default function MotosStore() {
                 type="text"
                 {...register('placa')}
                 placeholder=""
+                maxLength={7}
               />
+
               <newMotos.Label>
                 <BsCreditCardFill />
                 Placa
@@ -86,6 +88,7 @@ export default function MotosStore() {
                 type="text"
                 {...register('ano')}
                 placeholder=""
+                maxLength={4}
               />
               <newMotos.Label>
                 <FaCalendar />
@@ -100,6 +103,7 @@ export default function MotosStore() {
                 type="text"
                 {...register('marca')}
                 placeholder=""
+                maxLength={50}
               />
               <newMotos.Label>
                 <FaBookmark />
@@ -112,6 +116,7 @@ export default function MotosStore() {
                 type="text"
                 {...register('cor')}
                 placeholder=""
+                maxLength={20}
               />
               <newMotos.Label>
                 <IoColorPaletteOutline />
@@ -126,6 +131,7 @@ export default function MotosStore() {
                 type="text"
                 {...register('modelo')}
                 placeholder=""
+                maxLength={50}
               />
               <newMotos.Label>
                 <FaMotorcycle />
@@ -134,10 +140,16 @@ export default function MotosStore() {
             </newMotos.DivLabel>
 
             <newMotos.DivLabel>
-              <newMotos.InputCPF
-                type="text"
-                {...register('cpf')}
-                placeholder=""
+              <Controller
+                name="cpf"
+                control={control}
+                render={({ field }) => (
+                  <newMotos.InputCPF
+                    format="###.###.###-##"
+                    placeholder=""
+                    {...field}
+                  />
+                )}
               />
               <newMotos.Label>
                 <FaAddressCard />
@@ -149,6 +161,7 @@ export default function MotosStore() {
           <newMotos.InputOBS
             placeholder="Observação"
             {...register('observacao')}
+            maxLength={250}
           />
 
           <newMotos.DivButtons>

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { PatternFormat } from 'react-number-format';
 
 export const Container = styled.div`
   display: flex;
@@ -94,7 +95,7 @@ export const InputName = styled.input`
   font-size: 20px;
 `;
 
-export const InputCPF = styled.input`
+export const InputCPF = styled(PatternFormat)`
   width: 40%;
   padding: 15px;
   background: #d9d9d9;
@@ -104,7 +105,7 @@ export const InputCPF = styled.input`
   font-size: 20px;
 `;
 
-export const InputTEL = styled.input`
+export const InputTEL = styled(PatternFormat)`
   width: 40%;
   padding: 15px;
   background: #d9d9d9;

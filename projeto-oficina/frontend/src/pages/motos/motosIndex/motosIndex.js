@@ -14,6 +14,16 @@ export default function MotosIndex() {
   const [motos, setMotos] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const placaFormat = (placaString) => {
+    const caracteres = placaString.replace(/[^a-z0-9]/gi, '').toUpperCase();
+
+    if (caracteres.length === 7) {
+      return caracteres.replace(/(\w{3})(\w{4})/, '$1-$2');
+    }
+
+    return placaString;
+  };
+
   const handleNewClick = () => {
     navigate('/motos/store');
   };
@@ -139,7 +149,9 @@ const renderContent = () => {
             </bikes.Ano>
             <bikes.Placa>
               <bikes.PlacaText>Placa:</bikes.PlacaText>
-              <bikes.PlacaContent>{moto.MOTO_PLACA}</bikes.PlacaContent>
+              <bikes.PlacaContent>
+                {placaFormat(moto.MOTO_PLACA)}
+              </bikes.PlacaContent>
             </bikes.Placa>
           </bikes.AnoPlaca>
 

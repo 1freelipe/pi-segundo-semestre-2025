@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { PatternFormat } from 'react-number-format';
 
 import MotoPng from '../../../img/moto.png';
 
@@ -167,7 +168,7 @@ export const InputModelo = styled.input`
   }
 `;
 
-export const InputCPF = styled.input`
+export const InputCPF = styled(PatternFormat)`
   width: 100%;
   padding: 15px;
   font-size: 20px;

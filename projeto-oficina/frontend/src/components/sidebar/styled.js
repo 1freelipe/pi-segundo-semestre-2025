@@ -37,7 +37,7 @@ export const NavList = styled.ul`
   list-style-type: none;
   display: flex;
   flex-direction: column;
-  gap: 65px;
+  gap: 50px;
   font-family: 'Poppins', sans-serif;
   font-weight: 500;
   font-style: normal;
