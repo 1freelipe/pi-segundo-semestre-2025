@@ -9,11 +9,50 @@ const clienteSchema = yup.object().shape({
     .email('Digite um e-mail válido')
     .required('O e-mail é obrigatório'),
 
-  telefone: yup.string().min(10, 'Telefone inválido'),
+  telefone: yup
+    .string()
+    .transform((value, originalValue) =>
+      originalValue ? originalValue.replace(/[^\d]/g, '') : originalValue
+    )
+    .min(11, 'Telefone inválido'),
 
   cpf: yup
     .string()
     .required('O CPF é obrigatório')
+    .transform((value, originalValue) =>
+      originalValue ? originalValue.replace(/[^\d]/g, '') : originalValue
+    )
+    .min(11, 'O CPF deve ter 11 dígitos')
+    .max(11, 'O CPF deve ter 11 dígitos')
+    .test('is-cpf', 'CPF inválido', (value) => {
+      if (!value) return false;
+      return cpf.isValid(value);
+    }),
+});
+
+export const clienteUpSchema = yup.object().shape({
+  CLI_NOME: yup.string().required('O nome é obrigatório'),
+
+  CLI_EMAIL: yup
+    .string()
+    .email('Digite um e-mail válido')
+    .required('O e-mail é obrigatório'),
+
+  CLI_TELEFONE: yup
+    .string()
+    .transform((value, originalValue) =>
+      originalValue ? originalValue.replace(/[^\d]/g, '') : originalValue
+    )
+    .min(11, 'Telefone inválido'),
+
+  CLI_CPF: yup
+    .string()
+    .required('O CPF é obrigatório')
+    .transform((value, originalValue) =>
+      originalValue ? originalValue.replace(/[^\d]/g, '') : originalValue
+    )
+    .min(11, 'O CPF deve ter 11 dígitos')
+    .max(11, 'O CPF deve ter 11 dígitos')
     .test('is-cpf', 'CPF inválido', (value) => {
       if (!value) return false;
       return cpf.isValid(value);
@@ -21,13 +60,20 @@ const clienteSchema = yup.object().shape({
 });
 
 export const motosSchema = yup.object().shape({
-  placa: yup.string().required('A placa é obrigatória'),
+  placa: yup
+    .string()
+    .required('A placa é obrigatória')
+    .min(7, 'A placa deve conter 7 digítos')
+    .max(7, 'A placa deve conter 7 dígitos'),
 
   modelo: yup.string().required('O modelo deve ser preenchido'),
 
   cpf: yup
     .string()
     .required('O CPF do cliente é obrigatório')
+    .transform((value, originalValue) =>
+      originalValue ? originalValue.replace(/[^\d]/g, '') : originalValue
+    )
     .test('is-cpf', 'CPF inválido', (value) => {
       if (!value) return false;
       return cpf.isValid(value);

@@ -1,37 +1,45 @@
 import styled, { css } from 'styled-components';
 
+const SIDEBAR_WIDTH = '100px';
+
 export const Container = styled.div`
-  background: #fffff0;
-  width: 80%;
-  margin: 0 auto;
+  width: calc(90% - ${SIDEBAR_WIDTH});
+  margin-left: calc(${SIDEBAR_WIDTH} + 100px);
   margin-bottom: 250px;
   border-radius: 12px;
-  border: 1px solid #930707;
-  padding: 20px;
 
   h1 {
     text-align: center;
     font-size: 30px;
     text-transform: uppercase;
-    color: #252525;
+    color: #fffff0;
     font-family: 'Kanit', sans-serif;
     font-weight: 600;
     font-style: normal;
     margin-bottom: 15px;
+    background: #930707;
+    padding: 10px;
+    border: 1px solid #fffff0;
+    border-radius: 12px;
   }
 `;
 
 export const DivTitle = styled.div`
-  background: #930707;
-  border: 1px solid #fffff0;
-  margin: 20px auto;
-  width: 400px;
-  padding: 10px;
-  border-radius: 40px;
-  box-shadow: 0 0 4px #fffff0;
+  margin-top: 20px;
+  width: calc(100% - ${SIDEBAR_WIDTH});
+  margin-left: ${SIDEBAR_WIDTH};
 `;
 
 export const Title = styled.h1`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  background: #930707;
+  border: 1px solid #fffff0;
+  box-shadow: 0 0 4px #fffff0;
+  border-radius: 40px;
+  padding: 10px;
   color: white;
   font-size: 30px;
   text-align: center;
@@ -39,17 +47,21 @@ export const Title = styled.h1`
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
   font-style: normal;
+  width: 400px;
 `;
 
 export const DivBotoes = styled.div`
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  width: 80%;
   height: 100px;
-  margin: 30px auto;
+  margin-top: 30px;
   padding: 10px;
   gap: 30px;
+  width: calc(96% - ${SIDEBAR_WIDTH});
+  margin-left: ${SIDEBAR_WIDTH};
+  padding-left: 100px;
+  margin-bottom: 30px;
 `;
 
 export const HomeIcon = styled.div`
@@ -152,7 +164,6 @@ export const LabelCliente = styled.label`
 
 export const StyledTable = styled.table`
   width: 100%;
-  border: 1px solid #ccc;
   box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
   background-color: #fffff0;
   border-radius: 12px;

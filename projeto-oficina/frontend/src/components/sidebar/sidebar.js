@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink as RouterNavLink } from 'react-router-dom';
+import { NavLink as RouterNavLink, useNavigate } from 'react-router-dom';
 
 import { IoBarChart } from 'react-icons/io5';
 import {
@@ -8,8 +8,11 @@ import {
   FaCalendarAlt,
   FaTools,
   FaUserCircle,
+  FaWarehouse,
 } from 'react-icons/fa';
+
 import { TbLogout } from 'react-icons/tb';
+import { useAuth } from '../../contexts/authContexts';
 import iconePath from '../../img/iconeMainter.png';
 import {
   NavList,
@@ -23,6 +26,9 @@ import {
 
 export default function SideBar() {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const userName = user?.login || 'Faça login';
 
   const handleMouseEnter = () => {
     setIsExpanded(true);
@@ -30,6 +36,11 @@ export default function SideBar() {
 
   const handleMouseLeave = () => {
     setIsExpanded(false);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
   };
 
   return (
@@ -56,7 +67,7 @@ export default function SideBar() {
               <IconWrapper>
                 <FaUserCircle />
               </IconWrapper>
-              <NavText $isExpanded={isExpanded}>Olá, Bem vindo!</NavText>
+              <NavText $isExpanded={isExpanded}>{userName}</NavText>
             </NavLink>
           </NavItem>
         </NavList>
@@ -115,7 +126,16 @@ export default function SideBar() {
         </NavItem>
 
         <NavItem>
-          <NavLink as={RouterNavLink} to="/logout" $isExpanded={isExpanded}>
+          <NavLink as={RouterNavLink} to="/estoque" $isExpanded={isExpanded}>
+            <IconWrapper>
+              <FaWarehouse />
+            </IconWrapper>
+            <NavText $isExpanded={isExpanded}>Estoque</NavText>
+          </NavLink>
+        </NavItem>
+
+        <NavItem>
+          <NavLink $isExpanded={isExpanded} onClick={handleLogout}>
             <IconWrapper>
               <TbLogout />
             </IconWrapper>

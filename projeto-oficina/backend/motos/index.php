@@ -21,7 +21,8 @@ try {
     INNER JOIN tb_modelo ON tb_moto.MOTO_MODELO = tb_modelo.MODELO_ID
     INNER JOIN tb_marca ON tb_moto.MOTO_MARCA = tb_marca.MARCA_ID
     INNER JOIN tb_cliente ON tb_moto.MOTO_CLIENTE = tb_cliente.CLI_ID
-    INNER JOIN tb_cor ON tb_moto.MOTO_COR = tb_cor.COR_ID');
+    INNER JOIN tb_cor ON tb_moto.MOTO_COR = tb_cor.COR_ID
+    ORDER BY MOTO_ID DESC');
 
     $stmt->execute();
     $motos = $stmt->fetchAll(PDO::FETCH_ASSOC);

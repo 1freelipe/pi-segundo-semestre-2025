@@ -1,9 +1,11 @@
 <?php
-
-require_once __DIR__ . "/../config/db.php";
-
 header("Access-Control-Allow-Origin: *");
 header("Content-type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Methods: POST, GET");
+header("Access-Control-Max-Age: 3600");
+header("Access-Control-Allow-Headers: Content-type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
+require_once '../config/db.php';
 
 $dados = json_decode(file_get_contents("php://input"), true);
 
@@ -28,7 +30,7 @@ if (strlen($senha) < 6) {
 }
 
 // Verifica se login já existe
-$stmt = $pdo->prepare("SELECT FUN_ID FROM funcionario WHERE FUN_LOGIN = ?");
+$stmt = $pdo->prepare("SELECT FUN_ID FROM tb_funcionario WHERE FUN_LOGIN = ?");
 $stmt->execute([$login]);
 
 if ($stmt->fetch()) {
@@ -43,7 +45,7 @@ $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 
 // Inserção
 $stmt = $pdo->prepare("
-    INSERT INTO funcionario (FUN_NOME, FUN_LOGIN, FUN_SENHA, FUN_ATIVO)
+    INSERT INTO tb_funcionario (FUN_NOME, FUN_LOGIN, FUN_SENHA, FUN_ATIVO)
     VALUES (?, ?, ?, 1)
 ");
 

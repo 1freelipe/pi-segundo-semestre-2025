@@ -1,24 +1,42 @@
 import styled from 'styled-components';
 
+const SIDEBAR_WIDTH = '100px';
+
 export const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  margin: 0 auto 250px;
   padding: 20px;
-  width: 85%;
   max-height: 90vh;
   position: relative;
+  width: calc(100% - ${SIDEBAR_WIDTH});
+  margin-bottom: 250px;
+  margin-left: ${SIDEBAR_WIDTH};
 `;
 
 export const DivTitle = styled.h1`
+  margin-top: 20px;
+  width: calc(100% - ${SIDEBAR_WIDTH});
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const TitleTop = styled.h1`
+  color: white;
+  font-size: 30px;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  font-style: normal;
   background: #930707;
   border: 1px solid #fffff0;
-  margin: 20px auto;
-  width: 450px;
+  box-shadow: 0 0 4px #fffff0;
   padding: 10px;
   border-radius: 40px;
-  box-shadow: 0 0 4px #fffff0;
+  width: 450px;
+  margin-left: ${SIDEBAR_WIDTH};
 `;
 
 export const ButtonNew = styled.button`
@@ -47,16 +65,6 @@ export const ButtonNew = styled.button`
   &:active {
     transform: scale(0.98);
   }
-`;
-
-export const TitleTop = styled.h1`
-  color: white;
-  font-size: 30px;
-  text-align: center;
-  text-transform: uppercase;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 800;
-  font-style: normal;
 `;
 
 export const InsertContent = styled.div`
