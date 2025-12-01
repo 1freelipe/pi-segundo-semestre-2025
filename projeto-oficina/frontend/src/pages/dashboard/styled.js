@@ -1,5 +1,7 @@
 import styled, { keyframes } from 'styled-components';
 
+const SIDEBAR_WIDTH = '100px';
+
 const scrollUp = keyframes`
   0% {
     transform: translateY(0)
@@ -235,75 +237,104 @@ export const DashTop = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 20px auto;
-  background: #252525;
-  width: 80%;
-  height: 150px;
+  margin-top: 20px;
+  backdrop-filter: blur(10px);
+  width: calc(90% - ${SIDEBAR_WIDTH});
+  margin-left: calc(${SIDEBAR_WIDTH} + 100px);
   padding: 20px 10px;
+  height: 150px;
   border-radius: 12px;
   gap: 15px;
-  box-shadow: 0 1px 8px #fffff0;
-  border: 1px solid #fffff0;
+  border: 1px solid #252525;
 `;
 
 export const TitleTop = styled.h4`
-  font-family: 'Kanit', sans-serif;
-  font-weight: 600;
-  font-style: normal;
   color: #fffff0;
   margin: 0 auto;
-  width: 50%;
+  width: 60%;
   background: #970707;
   text-align: center;
-  padding: 5px;
+  padding: 5px 10px;
   border-radius: 7px;
-  box-shadow: 0 1px 8px #fffff0;
+  border: 1px solid #fffff0;
+  box-shadow: 0 0 12px #fffff085;
+  white-space: nowrap;
 `;
 
 export const ChartTopOne = styled.div`
-  background: #252525;
+  backdrop-filter: blur(10px);
   width: 40%;
   height: 140px;
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 10px;
   border: 2px solid #970707;
   text-align: center;
+  box-shadow: 0 1px 8px #930707;
+
+  h4 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-style: normal;
+  }
 
   .MiniTitle {
     color: #fffff0;
     margin-top: 30px;
     font-size: 25px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-style: normal;
   }
 `;
 
 export const ChartTopTwo = styled.div`
-  background: #252525;
+  backdrop-filter: blur(10px);
   width: 40%;
   height: 140px;
-  border-radius: 8px;
+  border-radius: 12px;
   border: 2px solid #970707;
   padding: 10px;
   text-align: center;
+  box-shadow: 0 1px 8px #930707;
+
+  h4 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-style: normal;
+  }
 
   .MiniTitle {
     color: #fffff0;
     margin-top: 30px;
     font-size: 25px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-style: normal;
   }
 `;
 
 export const ChartTopThree = styled.div`
-  background: #252525;
+  backdrop-filter: blur(10px);
   width: 40%;
   height: 140px;
-  border-radius: 8px;
+  border-radius: 12px;
   border: 2px solid #970707;
   padding: 10px;
   text-align: center;
+  box-shadow: 0 1px 8px #930707;
+
+  h4 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-style: normal;
+  }
 
   .MiniTitle {
     color: #fffff0;
     margin-top: 30px;
     font-size: 25px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-style: normal;
   }
 `;

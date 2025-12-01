@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FaArrowAltCircleLeft } from 'react-icons/fa';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { toast } from 'react-toastify';
 
@@ -12,6 +12,7 @@ import axios from '../../../services/axios';
 
 export default function OrdensStore() {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleReturn = () => {
     navigate('/ordemdeservico');
@@ -19,7 +20,7 @@ export default function OrdensStore() {
 
   const { id } = useParams();
 
-  const { register, handleSubmit, reset } = useForm({
+  const { register, handleSubmit, reset, control } = useForm({
     resolver: yupResolver(ordensSchema),
   });
 
@@ -54,6 +55,7 @@ export default function OrdensStore() {
   }, [id, navigate, reset]);
 
   const handleFormSubmit = async (data) => {
+    setIsLoading(true);
     try {
       const dataToSend = {
         ...data,
@@ -74,6 +76,8 @@ export default function OrdensStore() {
       } else {
         toast.error('Ocorreu um erro ao tentar se conectar com o servidor.');
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -106,10 +110,16 @@ export default function OrdensStore() {
             {...register('servico')}
           />
           <ordem.NomePlaca>
-            <ordem.InputNome
-              type="text"
-              placeholder="Cliente"
-              {...register('cliente')}
+            <Controller
+              name="cliente"
+              control={control}
+              render={({ field }) => (
+                <ordem.InputNome
+                  format="###.###.###-##"
+                  placeholder="CPF Cliente"
+                  {...field}
+                />
+              )}
             />
             <ordem.InputPlaca
               type="text"
@@ -134,7 +144,9 @@ export default function OrdensStore() {
             {...register('observacao')}
           />
           <ordem.ButtonsWrapper>
-            <ordem.BtnSubmit>Cadastrar</ordem.BtnSubmit>
+            <ordem.BtnSubmit disabled={isLoading}>
+              {isLoading ? 'Carregando' : 'Atualizar'}
+            </ordem.BtnSubmit>
             <ordem.BtnCancel
               onClick={(e) => {
                 e.preventDefault();

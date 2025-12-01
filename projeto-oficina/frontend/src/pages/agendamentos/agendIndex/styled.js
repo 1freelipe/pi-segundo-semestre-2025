@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { PatternFormat } from 'react-number-format';
 
 const SIDEBAR_WIDTH = '100px';
 const STATUS_COLOR_TEXT = (status) => {
@@ -135,7 +136,7 @@ export const DataHora = styled.div`
   justify-content: space-between;
 `;
 
-export const InputCliente = styled.input`
+export const InputCliente = styled(PatternFormat)`
   width: 480px;
   padding: 7px;
   background: #252525;

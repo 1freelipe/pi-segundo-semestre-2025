@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { IoIosSearch, IoIosCreate } from 'react-icons/io';
 import { FaTrash, FaCalendarCheck } from 'react-icons/fa';
 import { MdCancel } from 'react-icons/md';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { toast } from 'react-toastify';
 
@@ -20,6 +20,15 @@ export default function AgendamentosIndex() {
   const navigate = useNavigate();
   const location = useLocation();
   const STATUS_MAP = { A: 'Andamento', C: 'Cancelado', F: 'Finalizado' };
+  const placaFormat = (placaString) => {
+    const caracteres = placaString.replace(/[^a-z0-9]/gi, '');
+
+    if (caracteres.length === 7) {
+      return caracteres.replace(/(\w{3})(\w{4})/, '$1-$2');
+    }
+
+    return placaString;
+  };
 
   const handleDelete = async (id, nome) => {
     confirmAlert({
@@ -130,7 +139,7 @@ export default function AgendamentosIndex() {
     });
   };
 
-  const { register, handleSubmit, reset } = useForm({
+  const { register, handleSubmit, reset, control } = useForm({
     resolver: yupResolver(agendamentosSchema),
     defaultValues: {
       cliente: '',
@@ -158,6 +167,7 @@ export default function AgendamentosIndex() {
   // Lógica do Store
   // Definindo a rota do backend que o submit do formulário vai utilizar
   const handleFormSubmit = async (data) => {
+    setLoading(true);
     try {
       const isEditing = editingId !== null;
       const url = isEditing
@@ -223,6 +233,8 @@ export default function AgendamentosIndex() {
       } else {
         toast.error('Não foi possível se conectar com o servidor.');
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -306,7 +318,13 @@ export default function AgendamentosIndex() {
         >
           <agendamentos.DivLabel>
             <agendamentos.Label>Cliente</agendamentos.Label>
-            <agendamentos.InputCliente type="text" {...register('cliente')} />
+            <Controller
+              name="cliente"
+              control={control}
+              render={({ field }) => (
+                <agendamentos.InputCliente format="###.###.###-##" {...field} />
+              )}
+            />
           </agendamentos.DivLabel>
           <agendamentos.DivLabel>
             <agendamentos.Label>Placa</agendamentos.Label>
@@ -333,7 +351,7 @@ export default function AgendamentosIndex() {
             {...register('observacao')}
           />
           <agendamentos.ButtonsWrapper>
-            <agendamentos.ButtonSubmit>
+            <agendamentos.ButtonSubmit disabled={loading}>
               {editingId ? 'Salvar Edição' : 'Agendar'}
             </agendamentos.ButtonSubmit>
             {editingId && (
@@ -388,7 +406,9 @@ export default function AgendamentosIndex() {
                 <agendamentos.Tr key={agen.AGEN_ID}>
                   <agendamentos.Td>{agen.AGEN_ID}</agendamentos.Td>
                   <agendamentos.Td>{agen.CLI_NOME}</agendamentos.Td>
-                  <agendamentos.Td>{agen.MOTO_PLACA}</agendamentos.Td>
+                  <agendamentos.Td>
+                    {placaFormat(agen.MOTO_PLACA)}
+                  </agendamentos.Td>
                   <agendamentos.Td>{agen.FUN_NOME}</agendamentos.Td>
                   <agendamentos.Td $status={agen.AGEN_STATUS}>
                     {STATUS_MAP[agen.AGEN_STATUS || 'Status inválido']}

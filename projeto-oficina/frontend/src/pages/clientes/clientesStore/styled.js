@@ -43,6 +43,11 @@ export const Form = styled.form`
     &:active {
       color: #fffff0;
     }
+
+    &:disabled {
+      background: #3a741fff;
+      cursor: not-allowed;
+    }
   }
 
   ::placeholder {

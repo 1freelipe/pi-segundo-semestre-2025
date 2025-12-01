@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { PatternFormat } from 'react-number-format';
 
 import ferramentas from '../../../img/ferramentas.png';
 
@@ -101,7 +102,7 @@ export const InputServico = styled.input`
   }
 `;
 
-export const InputNome = styled.input`
+export const InputNome = styled(PatternFormat)`
   width: 40%;
   padding: 13px;
   font-size: 17px;

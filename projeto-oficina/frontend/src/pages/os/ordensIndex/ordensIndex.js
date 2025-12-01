@@ -38,6 +38,16 @@ export default function OrdensIndex() {
     F: 'Finalizado',
   };
 
+  const placaFormat = (placaString) => {
+    const caracteres = placaString.replace(/[^a-z0-9]/gi, '');
+
+    if (caracteres.length === 7) {
+      return caracteres.replace(/(\w{3})(\w{4})/, '$1-$2');
+    }
+
+    return placaString;
+  };
+
   const handleDelete = async (id, nome) => {
     confirmAlert({
       title: 'Confirmar exclusão',
@@ -290,7 +300,7 @@ export default function OrdensIndex() {
                     <ordens.Td>{os.ORDEM_ID}</ordens.Td>
                     <ordens.Td>{os.CLI_NOME}</ordens.Td>
                     <ordens.Td>{os.FUN_NOME}</ordens.Td>
-                    <ordens.Td>{os.MOTO_PLACA}</ordens.Td>
+                    <ordens.Td>{placaFormat(os.MOTO_PLACA)}</ordens.Td>
                     <ordens.Td>{os.ORDEM_SERVICO_REALIZADO}</ordens.Td>
                     <ordens.Td>
                       {os.ORDEM_VALOR_TOTAL > 0

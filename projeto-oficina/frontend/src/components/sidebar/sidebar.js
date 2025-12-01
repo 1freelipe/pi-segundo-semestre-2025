@@ -30,6 +30,19 @@ export default function SideBar() {
   const navigate = useNavigate();
   const userName = user?.login || 'Faça login';
 
+  const nameCapitalized = (nameString) => {
+    if (userName) {
+      const letter = userName.charAt(0);
+      const letterUpper = letter.toUpperCase();
+      const userNameSlice = userName.slice(1);
+
+      const capitalized = letterUpper + userNameSlice;
+      return capitalized;
+    }
+
+    return nameString;
+  };
+
   const handleMouseEnter = () => {
     setIsExpanded(true);
   };
@@ -65,9 +78,11 @@ export default function SideBar() {
               $isExpanded={isExpanded}
             >
               <IconWrapper>
-                <FaUserCircle />
+                <FaUserCircle className="userIcon" />
               </IconWrapper>
-              <NavText $isExpanded={isExpanded}>{userName}</NavText>
+              <NavText $isExpanded={isExpanded}>
+                Olá, {nameCapitalized(userName)}!
+              </NavText>
             </NavLink>
           </NavItem>
         </NavList>
@@ -84,7 +99,7 @@ export default function SideBar() {
         <NavItem>
           <NavLink as={RouterNavLink} to="/motos" $isExpanded={isExpanded}>
             <IconWrapper>
-              <FaMotorcycle />
+              <FaMotorcycle className="bikeIcon" />
             </IconWrapper>
             <NavText $isExpanded={isExpanded}>Motos</NavText>
           </NavLink>

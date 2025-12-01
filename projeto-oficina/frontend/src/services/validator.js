@@ -88,6 +88,9 @@ export const motosUpdateSchema = yup.object().shape({
   CLI_CPF: yup
     .string()
     .required('O CPF do cliente é obrigatório')
+    .transform((value, originalValue) =>
+      originalValue ? originalValue.replace(/[^\d]/g, '') : originalValue
+    )
     .test('is-cpf', 'CPF inválido', (value) => {
       if (!value) return false;
       return cpf.isValid(value);
@@ -108,6 +111,9 @@ export const agendamentosSchema = yup.object().shape({
   cliente: yup
     .string()
     .required('O CPF do cliente é obrigatório.')
+    .transform((value, originalValue) =>
+      originalValue ? originalValue.replace(/[^\d]/g, '') : originalValue
+    )
     .test('is-CPF', 'CPF inválido', (value) => {
       if (!value) return false;
       return cpf.isValid(value);
@@ -115,9 +121,13 @@ export const agendamentosSchema = yup.object().shape({
 });
 
 export const ordensSchema = yup.object().shape({
-  placa: yup.string().required('A placa da moto é obrigatória'),
+  placa: yup
+    .string()
+    .required('A placa da moto é obrigatória')
+    .min(7, 'A placa deve conter 7 dígitos')
+    .max(7, 'A placa deve conter 7 dígitos'),
 
-  valor: yup.number().required('O valor da ordem é obrigatório.'),
+  valor: yup.string().required('O valor da ordem é obrigatório.'),
 
   funcionario: yup
     .string()
@@ -126,6 +136,9 @@ export const ordensSchema = yup.object().shape({
   cliente: yup
     .string()
     .required('O CPF do cliente é obrigatório.')
+    .transform((value, originalValue) =>
+      originalValue ? originalValue.replace(/[^\d]/g, '') : originalValue
+    )
     .test('is-CPF', 'CPF inválido', (value) => {
       if (!value) return false;
       return cpf.isValid(value);
