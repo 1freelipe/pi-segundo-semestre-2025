@@ -6,6 +6,7 @@ import { FaEdit, FaTimesCircle, FaCalendarAlt } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 
 import * as bikes from './styled';
+import NotFoundBikes from '../../../components/notFoundBikes/notFound';
 import axios from '../../../services/axios';
 
 export default function MotosIndex() {
@@ -111,6 +112,10 @@ const renderContent = () => {
           <bikes.TitleContent>Carregando motos....</bikes.TitleContent>
         </bikes.InsertContent>
       );
+    }
+
+    if (motos.length === 0) {
+      return <NotFoundBikes />;
     }
 
     return motos.map((moto) => (
