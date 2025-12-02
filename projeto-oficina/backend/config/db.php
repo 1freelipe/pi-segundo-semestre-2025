@@ -1,7 +1,8 @@
 <?php
 $allowedOrigins = [
     'http://localhost:3000',
-    'https://black-meadow-0fc40280f.3.azurestaticapps.net'
+    'https://black-meadow-0fc40280f.3.azurestaticapps.net',
+    'https://www.mainteer.com.br'
 ];
 
 if (isset($_SERVER['HTTP_ORIGIN']) && in_array($_SERVER['HTTP_ORIGIN'], $allowedOrigins)) {
