@@ -145,4 +145,18 @@ export const ordensSchema = yup.object().shape({
     }),
 });
 
+export const estoqueSchema = yup.object().shape({
+  nome: yup.string().required('O nome da peça é obrigatório'),
+
+  categoria: yup.string().required('A categoria é obrigatória'),
+
+  quantidade: yup
+    .number()
+    .typeError('A quantidade deve ser um número válido.')
+    .required('A quantidade de peças deve ser informada.')
+    .min(1, 'A quantidade informada deve ser maior que 0'),
+
+  preco_venda: yup.string().required('O preço de venda é obrigatório'),
+});
+
 export default clienteSchema;

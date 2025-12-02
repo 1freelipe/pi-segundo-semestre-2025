@@ -14,6 +14,7 @@ export default function MotosIndex() {
 
   const [motos, setMotos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const isListEmpty = motos.length === 0 && !loading;
 
   const placaFormat = (placaString) => {
     const caracteres = placaString.replace(/[^a-z0-9]/gi, '').toUpperCase();
@@ -208,7 +209,9 @@ const renderContent = () => {
       </bikes.DivTitle>
 
       <bikes.Container>
-        <bikes.ButtonNew onClick={handleNewClick}>+Nova Moto</bikes.ButtonNew>
+        {!isListEmpty && (
+          <bikes.ButtonNew onClick={handleNewClick}>+Nova Moto</bikes.ButtonNew>
+        )}
 
         <bikes.InsertContent>{renderContent()}</bikes.InsertContent>
       </bikes.Container>

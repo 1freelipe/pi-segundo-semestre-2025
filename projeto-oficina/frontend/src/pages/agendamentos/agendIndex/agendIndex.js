@@ -274,8 +274,6 @@ export default function AgendamentosIndex() {
   }, []);
 
   useEffect(() => {
-    console.log(location.state);
-
     if (location.state && location.state.cliente && editingId === null) {
       const initialData = location.state;
 

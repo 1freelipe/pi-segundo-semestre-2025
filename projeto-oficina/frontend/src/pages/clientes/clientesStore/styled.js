@@ -228,4 +228,9 @@ export const ArrowReturn = styled.div`
     width: 40px;
     height: 40px;
   }
+
+  &.ArrowReturnEstoque {
+    left: -10%;
+    bottom: 50%;
+  }
 `;
