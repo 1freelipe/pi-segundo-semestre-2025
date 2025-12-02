@@ -21,19 +21,19 @@ if (!$data) {
 }
 
 /**
- * Garante que campos vazios virem NULL (se permitido) ou 0 (se numérico e obrigatório).
- * @param array $data O array de dados do input.
+ * Garante que campos vazios virem NULL (se permitido) ou 0/'' (se obrigatório).
+ * * @param array $data O array de dados do input.
  * @param string $key A chave do dado.
- * @param bool $isNumeric Se o campo é numérico.
+ * @param bool $isNumeric Se o campo é numérico (INT/DECIMAL).
  * @param bool $isMandatory Se o campo é obrigatório (NOT NULL no DB).
- * @return mixed O valor sanitizado, NULL ou 0.
+ * @return mixed O valor sanitizado, NULL, 0, ou ''.
  */
 function getDbValue($data, $key, $isNumeric = false, $isMandatory = false) {
     $value = $data[$key] ?? null; 
     
     // Se o valor for null ou string vazia
     if ($value === null || $value === '') {
-        // Se for obrigatório, retorna string vazia (para VARCHAR) ou 0 (para NUMÉRICO)
+        // Se for obrigatório, retorna 0 (para numérico) ou '' (para string)
         if ($isMandatory) {
             return $isNumeric ? 0 : ''; 
         }
@@ -43,8 +43,8 @@ function getDbValue($data, $key, $isNumeric = false, $isMandatory = false) {
 
     // Processamento numérico
     if ($isNumeric) {
+        // Remove caracteres de moeda e tenta converter para float.
         $cleaned = str_replace(['R$', ',', '.'], ['', '', '.'], $value);
-        // Retorna o float, ou 0 se a conversão falhar
         return is_numeric($cleaned) ? (float) $cleaned : 0; 
     }
     
@@ -61,10 +61,9 @@ try {
 
     $stmt = $pdo->prepare($sql);
 
-    // 1. Sanitização e obtenção dos valores prontos para o DB
-    // --------------------------------------------------------------------------------------
-    // Colunas NOT NULL: NOME, CATEGORIA, PRECO_VENDA
-    // Colunas NULL: DESCRICAO, ESTOQUE, PRECO_UNITARIO, MARGEM
+    // 1. Obtenção dos valores prontos para o DB
+    // NOT NULL (Obrigatórios): NOME (string), CATEGORIA (char), PRECO_VENDA (numeric)
+    // NULL (Opcionais): DESCRICAO, ESTOQUE, PRECO_UNITARIO, MARGEM
     // --------------------------------------------------------------------------------------
     
     // CAMPOS OBRIGATÓRIOS (NOT NULL):
@@ -73,10 +72,10 @@ try {
     $preco_venda = getDbValue($data, 'preco_venda', true, true); // Numérico e Obrigatório (Retorna 0 se vazio)
     
     // CAMPOS OPCIONAIS (NULL):
-    $descricao = getDbValue($data, 'descricao');
-    $estoque = getDbValue($data, 'quantidade', true); // Numérico e NULL
-    $preco_uni = getDbValue($data, 'preco_unitario', true); // Numérico e NULL
-    $margem = getDbValue($data, 'LUCRO_BRUTO', true); // Numérico e NULL
+    $descricao = getDbValue($data, 'descricao', false, false);
+    $estoque = getDbValue($data, 'quantidade', true, false); 
+    $preco_uni = getDbValue($data, 'preco_unitario', true, false); 
+    $margem = getDbValue($data, 'LUCRO_BRUTO', true, false); 
 
     // 2. Bind dos valores
     $stmt->bindValue(':nome', $nome);
