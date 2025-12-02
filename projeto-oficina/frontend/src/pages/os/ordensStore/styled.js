@@ -50,7 +50,7 @@ export const DivImg = styled.div`
   position: absolute;
   width: 250px;
   height: 250px;
-  top: 50px;
+  top: 150px;
   left: 30px;
   z-index: 100;
   background-image: url(${ferramentas});
