@@ -33,9 +33,13 @@ function getDbValue($data, $key, $isNumeric = false, $isMandatory = false) {
     
     // Se o valor for null ou string vazia
     if ($value === null || $value === '') {
-        // Se for obrigatório, retorna 0 (para numérico) ou '' (para string)
-        if ($isMandatory) {
-            return $isNumeric ? 0 : ''; 
+        // Se for numérico OBRIGATÓRIO, retorna 0 (para NOT NULL)
+        if ($isNumeric && $isMandatory) {
+            return 0; 
+        }
+        // Se for string OBRIGATÓRIA, retorna '' (para NOT NULL)
+        if (!$isNumeric && $isMandatory) {
+            return '';
         }
         // Se não for obrigatório, retorna NULL
         return null;
@@ -53,6 +57,32 @@ function getDbValue($data, $key, $isNumeric = false, $isMandatory = false) {
 }
 
 try {
+    // 1. Obtenção dos valores prontos para o DB
+    // NOT NULL (Obrigatórios): NOME, CATEGORIA, PRECO_VENDA
+    // NULL (Opcionais): DESCRICAO, ESTOQUE, PRECO_UNITARIO, MARGEM
+    // --------------------------------------------------------------------------------------
+    
+    // CAMPOS OBRIGATÓRIOS (NOT NULL):
+    // Usamos $isMandatory = true. O getDbValue retornará 0 ou '' se vazio.
+    $nome = getDbValue($data, 'nome', false, true); 
+    $categoria = getDbValue($data, 'categoria', false, true); 
+    $preco_venda = getDbValue($data, 'preco_venda', true, true); 
+    
+    // CAMPOS OPCIONAIS (NULL):
+    // Usamos $isMandatory = false. O getDbValue retornará NULL se vazio.
+    $descricao = getDbValue($data, 'descricao', false, false);
+    $estoque = getDbValue($data, 'quantidade', true, false); 
+    $preco_uni = getDbValue($data, 'preco_unitario', true, false); 
+    $margem = getDbValue($data, 'LUCRO_BRUTO', true, false); 
+
+    // 💡 VALIDAÇÃO ADICIONAL DE BARREIRA (Se o frontend falhar no required):
+    if ($nome === '' || $categoria === '' || $preco_venda === 0) {
+        http_response_code(400);
+        echo json_encode(["success" => false, "message" => "O nome, categoria e preço de venda são campos obrigatórios."]);
+        exit;
+    }
+
+
     $sql = "INSERT INTO tb_pecas_servico
         (PECAS_SER_NOME, PECAS_SER_CATEGORIA, PECAS_SER_DESCRICAO, PECAS_SER_ESTOQUE, 
          PECAS_SER_PRECO_UNITARIO, PECAS_SER_PRECO_VENDA, PECAS_SER_MARGEM)
@@ -61,23 +91,7 @@ try {
 
     $stmt = $pdo->prepare($sql);
 
-    // 1. Obtenção dos valores prontos para o DB
-    // NOT NULL (Obrigatórios): NOME (string), CATEGORIA (char), PRECO_VENDA (numeric)
-    // NULL (Opcionais): DESCRICAO, ESTOQUE, PRECO_UNITARIO, MARGEM
-    // --------------------------------------------------------------------------------------
-    
-    // CAMPOS OBRIGATÓRIOS (NOT NULL):
-    $nome = getDbValue($data, 'nome', false, true); 
-    $categoria = getDbValue($data, 'categoria', false, true); 
-    $preco_venda = getDbValue($data, 'preco_venda', true, true); // Numérico e Obrigatório (Retorna 0 se vazio)
-    
-    // CAMPOS OPCIONAIS (NULL):
-    $descricao = getDbValue($data, 'descricao', false, false);
-    $estoque = getDbValue($data, 'quantidade', true, false); 
-    $preco_uni = getDbValue($data, 'preco_unitario', true, false); 
-    $margem = getDbValue($data, 'LUCRO_BRUTO', true, false); 
-
-    // 2. Bind dos valores
+    // 2. Bind dos valores (PDO fará o cast correto de NULL ou número/string)
     $stmt->bindValue(':nome', $nome);
     $stmt->bindValue(':categoria', $categoria);
     $stmt->bindValue(':descricao', $descricao);
