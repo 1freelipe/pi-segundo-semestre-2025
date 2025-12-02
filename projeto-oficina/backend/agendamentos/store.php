@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 header("Access-Control-Allow-Origin: *");
 header("Content-type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
@@ -56,7 +60,7 @@ if (!empty($data['cliente']) || !empty($data['placa']) || !empty($data['funciona
     try {
         $stmt = $pdo->prepare('INSERT INTO tb_agendamento_de_servico (AGEN_MOTO, AGEN_CLIENTE, AGEN_FUNCIONARIO, AGEN_DATA, AGEN_HORA, AGEN_MOTIVO_OBSERVACAO) VALUES (:moto, :cliente, :funcionario, :data_agen, :hora, :observacao_motivo)');
 
-        $data_agendamento = htmlspecialchars(strip_tags($data['data_agen'] ?? ''));
+        $data_agendamento = htmlspecialchars(strip_tags($data['data_agen'] ?? null));
         $hora = htmlspecialchars(strip_tags($data['hora'] ?? ''));
         $observacao = htmlspecialchars(strip_tags($data['observacao'] ?? ''));
         
@@ -82,7 +86,7 @@ if (!empty($data['cliente']) || !empty($data['placa']) || !empty($data['funciona
 
             if(strpos($errorMessage, 'AGEN_MOTO') !== false) {
                 http_response_code(409);
-                echo json_encode(['success' => false, 'message' => 'Essa moto já possui um agendamento ativo.']);
+                echo json_encode(['success' => false, 'message' => 'Essa moto já possui um agendamento ativo.', 'MOTO' => $id_moto]);
             } else {
                 http_response_code(409);
                 echo json_encode(['success' => false, 'message' => 'Ocorreu um erro de duplicidade de dados.' . $errorMessage]);
