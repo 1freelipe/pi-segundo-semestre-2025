@@ -60,15 +60,29 @@ if (!empty($data['cliente']) || !empty($data['placa']) || !empty($data['funciona
     try {
         $stmt = $pdo->prepare('INSERT INTO tb_agendamento_de_servico (AGEN_MOTO, AGEN_CLIENTE, AGEN_FUNCIONARIO, AGEN_DATA, AGEN_HORA, AGEN_MOTIVO_OBSERVACAO) VALUES (:moto, :cliente, :funcionario, :data_agen, :hora, :observacao_motivo)');
 
-        $data_agendamento = htmlspecialchars(strip_tags($data['data_agen'] ?? null));
-        $hora = htmlspecialchars(strip_tags($data['hora'] ?? ''));
+        $data_agendamento_raw = $data['data_agen'] ?? null;
+        $hora_raw = $data['hora'] ?? null;
+
+        $data_agendamento = null;
+        $hora_db = null;
+
+        if(!empty($data_agendamento_raw)) {
+            $data_agendamento = htmlspecialchars(strip_tags($data_agendamento_raw));
+        }
+
+        if(!empty($hora_raw)) {
+            $hora_db = htmlspecialchars(strip_tags($hora_raw));
+        }
+
+
+
         $observacao = htmlspecialchars(strip_tags($data['observacao'] ?? ''));
         
         $stmt->bindParam(':moto', $id_moto);
         $stmt->bindParam(':cliente', $id_cliente);
         $stmt->bindParam(':funcionario', $id_funcionario);
         $stmt->bindParam(':data_agen', $data_agendamento);
-        $stmt->bindParam(':hora', $hora);
+        $stmt->bindParam(':hora', $hora_db);
         $stmt->bindParam(':observacao_motivo', $observacao);
 
         if($stmt->execute()) {
