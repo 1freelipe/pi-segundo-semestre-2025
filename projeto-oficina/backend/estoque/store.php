@@ -20,23 +20,35 @@ if (!$data) {
     exit;
 }
 
-// 💡 FUNÇÃO HELPER: Garante que campos vazios de números virem NULL/0, evitando o Strict Mode SQL
-function getDbValue($data, $key, $isNumeric = false) {
+/**
+ * Garante que campos vazios virem NULL (se permitido) ou 0 (se numérico e obrigatório).
+ * @param array $data O array de dados do input.
+ * @param string $key A chave do dado.
+ * @param bool $isNumeric Se o campo é numérico.
+ * @param bool $isMandatory Se o campo é obrigatório (NOT NULL no DB).
+ * @return mixed O valor sanitizado, NULL ou 0.
+ */
+function getDbValue($data, $key, $isNumeric = false, $isMandatory = false) {
     $value = $data[$key] ?? null; 
     
-    // Se o valor for null ou string vazia, retorna null
+    // Se o valor for null ou string vazia
     if ($value === null || $value === '') {
+        // Se for obrigatório, retorna string vazia (para VARCHAR) ou 0 (para NUMÉRICO)
+        if ($isMandatory) {
+            return $isNumeric ? 0 : ''; 
+        }
+        // Se não for obrigatório, retorna NULL
         return null;
     }
 
-    // Se for numérico, limpa o valor e o retorna como float
+    // Processamento numérico
     if ($isNumeric) {
-        // Remove caracteres de moeda e tenta converter para float. Se falhar, retorna 0.
         $cleaned = str_replace(['R$', ',', '.'], ['', '', '.'], $value);
-        return is_numeric($cleaned) ? (float) $cleaned : 0;
+        // Retorna o float, ou 0 se a conversão falhar
+        return is_numeric($cleaned) ? (float) $cleaned : 0; 
     }
     
-    // Sanitiza e retorna a string
+    // Sanitização de String
     return htmlspecialchars(strip_tags($value));
 }
 
@@ -50,23 +62,27 @@ try {
     $stmt = $pdo->prepare($sql);
 
     // 1. Sanitização e obtenção dos valores prontos para o DB
-    $nome = getDbValue($data, 'nome');
-    $categoria = getDbValue($data, 'categoria');
-    $descricao = getDbValue($data, 'descricao');
+    // --------------------------------------------------------------------------------------
+    // Colunas NOT NULL: NOME, CATEGORIA, PRECO_VENDA
+    // Colunas NULL: DESCRICAO, ESTOQUE, PRECO_UNITARIO, MARGEM
+    // --------------------------------------------------------------------------------------
     
-    // 💡 Campos Numéricos (passar 'true'): Vazio será NULL ou 0 (ajustar conforme a coluna)
-    // Se a coluna for NOT NULL, a função deve retornar 0, mas vou manter NULL como padrão para flexibilidade.
-    $estoque = getDbValue($data, 'quantidade', true); 
-    $preco_uni = getDbValue($data, 'preco_unitario', true); 
-    $preco_venda = getDbValue($data, 'preco_venda', true); 
-    $margem = getDbValue($data, 'LUCRO_BRUTO', true); 
+    // CAMPOS OBRIGATÓRIOS (NOT NULL):
+    $nome = getDbValue($data, 'nome', false, true); 
+    $categoria = getDbValue($data, 'categoria', false, true); 
+    $preco_venda = getDbValue($data, 'preco_venda', true, true); // Numérico e Obrigatório (Retorna 0 se vazio)
+    
+    // CAMPOS OPCIONAIS (NULL):
+    $descricao = getDbValue($data, 'descricao');
+    $estoque = getDbValue($data, 'quantidade', true); // Numérico e NULL
+    $preco_uni = getDbValue($data, 'preco_unitario', true); // Numérico e NULL
+    $margem = getDbValue($data, 'LUCRO_BRUTO', true); // Numérico e NULL
 
     // 2. Bind dos valores
     $stmt->bindValue(':nome', $nome);
     $stmt->bindValue(':categoria', $categoria);
     $stmt->bindValue(':descricao', $descricao);
     
-    // 💡 Bind dos Numéricos: O PDO fará o cast correto (NULL ou número)
     $stmt->bindValue(':estoque', $estoque); 
     $stmt->bindValue(':preco_uni', $preco_uni); 
     $stmt->bindValue(':preco_venda', $preco_venda); 
