@@ -98,9 +98,13 @@ export default function ChartTicketMedio() {
       {
         label: 'Ticket Médio (R$)',
         data: ticketMedio,
-        backgroundColor: 'rgba(147, 7, 7, 0.9)',
+        backgroundColor: [
+          'rgba(147, 7, 7, 0.9)',
+          'rgba(196, 26, 26, 0.8)',
+          'rgba(245, 32, 32, 0.8)',
+        ],
         borderColor: '#fffff0',
-        borderWidth: 1,
+        borderWidth: 2,
       },
     ],
   };
