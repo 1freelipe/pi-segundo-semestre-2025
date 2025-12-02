@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BsCreditCardFill } from 'react-icons/bs';
 import {
@@ -21,6 +21,7 @@ import { motosSchema } from '../../../services/validator';
 
 export default function MotosStore() {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleArrowReturn = () => {
     navigate('/motos');
@@ -31,6 +32,7 @@ export default function MotosStore() {
   });
 
   const handleFormSubmit = async (data) => {
+    setIsLoading(true);
     try {
       const response = await axios.post('/motos/store.php', data);
 
@@ -43,6 +45,8 @@ export default function MotosStore() {
       } else {
         toast.error('Não foi possível se conectar com o servidor.');
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -165,7 +169,9 @@ export default function MotosStore() {
           />
 
           <newMotos.DivButtons>
-            <newMotos.ButtonSubmit type="submit">Salvar</newMotos.ButtonSubmit>
+            <newMotos.ButtonSubmit type="submit" disabled={isLoading}>
+              {isLoading ? 'Carregando' : 'Salvar'}
+            </newMotos.ButtonSubmit>
             <newMotos.ButtonClear
               onClick={(e) => {
                 e.preventDefault();

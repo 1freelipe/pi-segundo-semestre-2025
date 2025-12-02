@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { BsCreditCardFill } from 'react-icons/bs';
 import {
@@ -10,7 +10,7 @@ import {
 import { FaMotorcycle } from 'react-icons/fa6';
 import { IoColorPaletteOutline } from 'react-icons/io5';
 import { toast } from 'react-toastify';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import * as newMotos from '../motosStore/styled';
@@ -29,6 +29,7 @@ import {
 
 export default function MotosStore() {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleArrowReturn = () => {
     navigate('/motos');
@@ -36,7 +37,7 @@ export default function MotosStore() {
 
   const { id } = useParams();
 
-  const { register, handleSubmit, reset, watch } = useForm({
+  const { register, handleSubmit, reset, watch, control } = useForm({
     resolver: yupResolver(motosUpdateSchema),
   });
 
@@ -73,9 +74,9 @@ export default function MotosStore() {
   }, [id, navigate, reset]);
 
   const handleFormSubmit = async (data) => {
+    setIsLoading(true);
     try {
       const response = await axios.post('/motos/update.php', data);
-
       if (response.data.equal) {
         toast.warn(response.data.message);
         navigate('/motos');
@@ -91,6 +92,8 @@ export default function MotosStore() {
       } else {
         toast.error('Não foi possível se conectar com o servidor.');
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -206,10 +209,16 @@ export default function MotosStore() {
             </newMotos.DivLabel>
 
             <newMotos.DivLabel>
-              <newMotos.InputCPF
-                type="text"
-                {...register('CLI_CPF')}
-                placeholder=""
+              <Controller
+                name="CLI_CPF"
+                control={control}
+                render={({ field }) => (
+                  <newMotos.InputCPF
+                    format="###.###.###-##"
+                    placeholder=""
+                    {...field}
+                  />
+                )}
               />
               <newMotos.Label>
                 <FaAddressCard />
@@ -224,8 +233,8 @@ export default function MotosStore() {
           />
 
           <newMotos.DivButtons>
-            <newMotos.ButtonSubmit type="submit">
-              Atualizar
+            <newMotos.ButtonSubmit type="submit" disabled={isLoading}>
+              {isLoading ? 'Carregando' : 'Atualizar'}
             </newMotos.ButtonSubmit>
           </newMotos.DivButtons>
         </newMotos.Form>

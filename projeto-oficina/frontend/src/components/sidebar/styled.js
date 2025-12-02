@@ -74,11 +74,13 @@ export const NavItem = styled.li`
 `;
 
 export const NavLink = styled.a`
-  text-align: center;
   display: flex;
   padding: 15px 10px;
   align-items: center;
   width: 100%;
+  /* justify-content: ${(props) =>
+    props.$isExpanded ? 'flex-start' : 'center'}; */
+  padding-left: ${(props) => (props.$isExpanded ? '20px' : '10px')};
   justify-content: ${(props) => (props.$isExpanded ? 'flex-start' : 'center')};
   color: white;
   text-decoration: none;
@@ -88,9 +90,21 @@ export const NavLink = styled.a`
     border-radius: 20px;
   }
 
+  .userIcon {
+    font-size: 25px;
+    margin-top: 7px;
+  }
+
+  .bikeIcon {
+    font-size: 25px;
+    margin-top: 7px;
+  }
+
   ${(props) =>
     props.$isLogo &&
     css`
+      padding-bottom: 0;
+
       &:hover {
         background-color: transparent;
       }
@@ -124,9 +138,7 @@ export const IconWrapper = styled.div`
 
 export const IconeMainteer = styled.img`
   width: 60px;
-  position: absolute;
-  left: 20px;
-  left: ${(props) => (props.$isExpanded ? '83px' : '20px')};
   width: ${(props) => (props.$isExpanded ? '140px' : '60px')};
+  margin-left: ${(props) => (props.$isExpanded ? '5px' : '0')};
   transition: 0.3s ease-in-out;
 `;

@@ -30,7 +30,7 @@ export default function ChartServicos() {
       },
       datalabels: {
         display: true,
-        color: '#252525',
+        color: '#fffff0',
         font: {
           size: 14,
           weight: 'bold',
@@ -50,9 +50,9 @@ export default function ChartServicos() {
       {
         label: 'Faturamento Percentual',
         data: [50, 25, 14, 11],
-        backgroundColor: ['#930707', '#ecee65ff', '#fffff0', '#71d6daff'],
+        backgroundColor: ['#930707', '#bb2b2bff', '#cf4c4cff', '#da1515ff'],
         borderColor: '#fffff0',
-        borderWidth: 1,
+        borderWidth: 2,
       },
     ],
   };

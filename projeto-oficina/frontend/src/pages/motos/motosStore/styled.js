@@ -236,6 +236,11 @@ export const ButtonSubmit = styled.button`
   &:active {
     transform: scale(0.98);
   }
+
+  &:disabled {
+    background: #550808ff;
+    cursor: not-allowed;
+  }
 `;
 
 export const ButtonClear = styled.button`

@@ -98,7 +98,7 @@ export default function Chartfat() {
         data: valor,
         backgroundColor: 'rgba(147, 7, 7, 0.9)',
         borderColor: '#252525',
-        borderWidth: 1,
+        borderWidth: 2,
       },
     ],
   };
