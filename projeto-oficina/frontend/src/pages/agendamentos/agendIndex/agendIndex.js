@@ -414,12 +414,12 @@ export default function AgendamentosIndex() {
                     {STATUS_MAP[agen.AGEN_STATUS || 'Status inválido']}
                   </agendamentos.Td>
                   <agendamentos.Td>
-                    {agen.AGEN_DATA !== '0000-00-00'
+                    {agen.AGEN_DATA !== null
                       ? agen.AGEN_DATA
                       : 'Data não informada'}
                   </agendamentos.Td>
                   <agendamentos.Td>
-                    {agen.AGEN_HORA !== '00:00:00'
+                    {agen.AGEN_HORA !== null
                       ? agen.AGEN_HORA
                       : 'Hora não informada'}
                   </agendamentos.Td>
