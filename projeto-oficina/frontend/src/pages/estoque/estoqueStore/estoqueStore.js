@@ -52,8 +52,8 @@ export default function EstoqueStore() {
     } catch (error) {
       if (
         error.response &&
-        error.data.response &&
-        error.data.response.message
+        error.response.data &&
+        error.response.data.message
       ) {
         toast.error(error.response.data.message);
       } else {
