@@ -22,12 +22,16 @@ if (!$id) {
 }
 
 try {
-    $stmt = $pdo->prepare("DELETE FROM pecas_servico WHERE PECASSER_ID = :id");
-    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-    $stmt->execute();
+    $stmt = $pdo->prepare("DELETE FROM tb_pecas_servico WHERE PECAS_SER_ID = ?");
+    $stmt->execute([$id]);
 
-    http_response_code(200);
-    echo json_encode(["success" => true, "message" => "Peça excluída com sucesso"]);
+    if($stmt->rowCount() > 0 ){
+        http_response_code(200);
+        echo json_encode(["success" => true, "message" => "Peça excluída com sucesso"]);
+    } else {
+        http_response_code(200);
+        echo json_encode(['success' => false, 'message' => 'Não foi possível excluir a peça.']);
+    }
 
 } catch (PDOException $e) {
     http_response_code(500);

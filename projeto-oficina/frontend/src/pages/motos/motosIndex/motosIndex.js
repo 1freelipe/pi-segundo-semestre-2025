@@ -6,6 +6,7 @@ import { FaEdit, FaTimesCircle, FaCalendarAlt } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 
 import * as bikes from './styled';
+import NotFoundBikes from '../../../components/notFoundBikes/notFound';
 import axios from '../../../services/axios';
 
 export default function MotosIndex() {
@@ -13,6 +14,7 @@ export default function MotosIndex() {
 
   const [motos, setMotos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const isListEmpty = motos.length === 0 && !loading;
 
   const placaFormat = (placaString) => {
     const caracteres = placaString.replace(/[^a-z0-9]/gi, '').toUpperCase();
@@ -113,6 +115,10 @@ const renderContent = () => {
       );
     }
 
+    if (motos.length === 0) {
+      return <NotFoundBikes />;
+    }
+
     return motos.map((moto) => (
       <bikes.Containers key={moto.MOTO_ID}>
         <bikes.Content>
@@ -203,7 +209,9 @@ const renderContent = () => {
       </bikes.DivTitle>
 
       <bikes.Container>
-        <bikes.ButtonNew onClick={handleNewClick}>+Nova Moto</bikes.ButtonNew>
+        {!isListEmpty && (
+          <bikes.ButtonNew onClick={handleNewClick}>+Nova Moto</bikes.ButtonNew>
+        )}
 
         <bikes.InsertContent>{renderContent()}</bikes.InsertContent>
       </bikes.Container>

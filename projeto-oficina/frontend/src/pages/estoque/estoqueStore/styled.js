@@ -37,6 +37,7 @@ export const ContainerForm = styled.div`
     0 4px 8px rgba(0, 0, 0, 0.4),
     10px 8px 20px rgba(0, 0, 0, 0.5),
     2px 2px 2px #d9d9d96c inset;
+  position: relative;
 `;
 
 export const Form = styled.form`
@@ -110,7 +111,7 @@ export const PrecoVenda = styled.input`
   border-radius: 15px;
 `;
 
-export const Lucro = styled.input`
+export const Lucro = styled.div`
   width: 152px;
   padding: 7px;
   background: #252525;

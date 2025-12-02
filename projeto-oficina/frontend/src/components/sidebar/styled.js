@@ -103,8 +103,6 @@ export const NavLink = styled.a`
   ${(props) =>
     props.$isLogo &&
     css`
-      padding-bottom: 0;
-
       &:hover {
         background-color: transparent;
       }
@@ -138,6 +136,7 @@ export const IconWrapper = styled.div`
 
 export const IconeMainteer = styled.img`
   width: 60px;
+  position: absolute;
   width: ${(props) => (props.$isExpanded ? '140px' : '60px')};
   margin-left: ${(props) => (props.$isExpanded ? '5px' : '0')};
   transition: 0.3s ease-in-out;
