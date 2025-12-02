@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
-$data = json_decode(file_get_contents("php://input"));
+$data = json_decode(file_get_contents("php://input"), true);
 
 if (!$data) {
     http_response_code(400);
@@ -22,25 +22,35 @@ if (!$data) {
 }
 
 try {
-    $stmt = $pdo->prepare("
-        INSERT INTO pecas_servico
-        (PECASSER_NOME, PECASSER_CATEGORIA, PECASSER_DESCRICAO, PECASSER_ESTOQUE, 
-         PECASSER_PRECO_UNITARIO, PECASSER_PRECO_VENDA, PECASSER_MARGEM)
+    $stmt = $pdo->prepare("INSERT INTO tb_pecas_servico
+        (PECAS_SER_NOME, PECAS_SER_CATEGORIA, PECAS_SER_DESCRICAO, PECAS_SER_ESTOQUE, 
+         PECAS_SER_PRECO_UNITARIO, PECAS_SER_PRECO_VENDA, PECAS_SER_MARGEM)
         VALUES (:nome, :categoria, :descricao, :estoque, :preco_uni, :preco_venda, :margem)
     ");
 
-    $stmt->bindValue(':nome', $data->nome);
-    $stmt->bindValue(':categoria', $data->categoria);
-    $stmt->bindValue(':descricao', $data->descricao);
-    $stmt->bindValue(':estoque', $data->estoque);
-    $stmt->bindValue(':preco_uni', $data->preco_unitario);
-    $stmt->bindValue(':preco_venda', $data->preco_venda);
-    $stmt->bindValue(':margem', $data->margem);
+    $nome = htmlspecialchars(strip_tags($data['nome'] ?? ''));
+    $categoria = htmlspecialchars(strip_tags($data['categoria'] ?? ''));
+    $descricao = htmlspecialchars_decode(strip_tags($data['descricao'] ?? ''));
+    $estoque = htmlspecialchars(strip_tags($data['estoque'] ?? ''));
+    $preco_uni = htmlspecialchars(strip_tags($data['preco_unitario'] ?? ''));
+    $preco_venda = htmlspecialchars(strip_tags($data['preco_venda'] ?? ''));
+    $margem = htmlspecialchars(strip_tags($data['LUCRO_BRUTO'] ?? 0));
 
-    $stmt->execute();
+    $stmt->bindValue(':nome', $nome);
+    $stmt->bindValue(':categoria', $categoria);
+    $stmt->bindValue(':descricao', $descricao);
+    $stmt->bindValue(':estoque', $estoque);
+    $stmt->bindValue(':preco_uni', $preco_uni);
+    $stmt->bindValue(':preco_venda', $preco_venda);
+    $stmt->bindValue(':margem', $margem);
 
-    http_response_code(201);
-    echo json_encode(["success" => true, "message" => "Peça cadastrada com sucesso"]);
+    if($stmt->execute()) {
+        http_response_code(200);
+        echo json_encode(["success" => true, "message" => "Peça cadastrada com sucesso."]);
+    } else {
+        http_response_code(200);
+        echo json_encode(['success' => false, 'message' => 'Ocorreu um erro ao tentar cadastrar a peça.']);
+    }
 
 } catch (PDOException $e) {
     http_response_code(500);
