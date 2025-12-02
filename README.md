@@ -33,19 +33,19 @@
     </thead>
     <tbody>
       <tr>
-        <td>Beatriz Martins</td>
+        <td>[Beatriz Martins](https://github.com/beamrt)</td>
         <td>Designer, Desenvolvedora Front-End, QA</td>
       </tr>
       <tr>
-        <td>Felipe Rodrigues Teixeira</td>
+        <td>[Felipe Rodrigues Teixeira](https://github.com/1freelipe)</td>
         <td>Desenvolvedor Full Stack, Documentação</td>
       </tr>
       <tr>
-        <td>Paola Gabriele de Oliveira</td>
+        <td>[Paola Gabriele de Oliveira](https://github.com/Paola403)</td>
         <td>DBA, Documentação</td>
       </tr>
       <tr>
-        <td>Samuel Heitor Fernandes</td>
+        <td>[Samuel Heitor Fernandes](https://github.com/HeitFernandes)</td>
         <td>Desenvolvedor Back-End, Documentação</td>
       </tr>
     </tbody>
