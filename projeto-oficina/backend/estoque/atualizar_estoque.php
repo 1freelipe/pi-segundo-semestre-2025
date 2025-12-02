@@ -8,7 +8,7 @@ header("Access-Control-Allow-Headers: Content-type, Access-Control-Allow-Headers
 
 require_once '../config/db.php';
 
-// CORS
+
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
@@ -16,19 +16,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 $data = json_decode(file_get_contents("php://input"));
 
-// Verificacao de dados 
-if (!isset($data->id) || !isset($data->quantidade)) {
+// Validação
+if (!isset($data->id) || !isset($data->quantidade) || !isset($data->categoria)) {
     http_response_code(400);
     echo json_encode([
         "success" => false,
-        "message" => "ID e quantidade são obrigatórios."
+        "message" => "ID, quantidade e categoria são obrigatórios."
+    ]);
+    exit;
+}
+
+// apenas peça pode mexer no estoque 
+if ($data->categoria !== 'P') {
+    http_response_code(400);
+    echo json_encode([
+        "success" => false,
+        "message" => "Atualização de estoque só é permitida para peças (categoria P)."
     ]);
     exit;
 }
 
 try {
 
-    
+    // chamando procedure
     $stmt = $pdo->prepare("CALL STP_ATUALIZA_ESTOQUE(:id, :quantidade)");
     $stmt->bindValue(':id', $data->id, PDO::PARAM_INT);
     $stmt->bindValue(':quantidade', $data->quantidade, PDO::PARAM_INT);
