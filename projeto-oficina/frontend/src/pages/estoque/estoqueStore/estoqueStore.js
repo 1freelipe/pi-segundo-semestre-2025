@@ -97,10 +97,10 @@ export default function EstoqueStore() {
               <option value="" disabled selected>
                 Categoria
               </option>
-              <option disabled value="SERVICO">
+              <option disabled value="S">
                 Serviço
               </option>
-              <option value="PECAS">Peças</option>
+              <option value="P">Peças</option>
             </newEstoque.Select>
 
             <newEstoque.InputQntd
