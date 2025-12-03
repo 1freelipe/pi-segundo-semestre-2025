@@ -39,10 +39,15 @@ export default function EstoqueIndex() {
     e.preventDefault();
 
     const quantityToSend = Number(newQuantity);
+    const itemToUpdate = stock.find((st) => st.PECAS_SER_ID === editingId);
 
     if (!editingId || quantityToSend < 0) {
       toast.error('A quantidade deve ser um número válido e positivo');
       return;
+    }
+
+    if (!itemToUpdate) {
+      toast.error('Peça não encontrada');
     }
 
     setIsLoading(true);
@@ -50,7 +55,10 @@ export default function EstoqueIndex() {
     try {
       const response = await axios.put(
         `/estoque/atualizar_estoque.php?id=${editingId}`,
-        { quantidade: quantityToSend }
+        {
+          quantidade: quantityToSend,
+          categoria: itemToUpdate.PECAS_SER_CATEGORIA,
+        }
       );
 
       if (response.data.success) {
