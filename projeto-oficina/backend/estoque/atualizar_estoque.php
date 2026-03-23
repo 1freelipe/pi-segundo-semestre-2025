@@ -2,7 +2,7 @@
 
 header("Access-Control-Allow-Origin: *");
 header("Content-type: application/json; charset=UTF-8");
-// 💡 CORREÇÃO 1: Adiciona o método PUT para requisições de atualização
+// 💡 MÉTODOS PERMITIDOS: PUT é necessário para a atualização
 header("Access-Control-Allow-Methods: GET, POST, PUT, OPTIONS"); 
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
@@ -15,11 +15,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-// 💡 CORREÇÃO 2: Lê o ID da URL (GET) e os dados do corpo (PUT/JSON)
+// Lê o ID da URL (GET) e os dados do corpo (PUT/JSON)
 $id_peca = $_GET['id'] ?? null;
 $data = json_decode(file_get_contents("php://input")); // Lê o JSON do corpo
 
-// 3. Validação dos Dados Essenciais
+// 1. Validação dos Dados Essenciais
 if (empty($id_peca) || !isset($data->quantidade)) {
     http_response_code(400);
     echo json_encode([
@@ -29,11 +29,10 @@ if (empty($id_peca) || !isset($data->quantidade)) {
     exit;
 }
 
-// 4. Lógica de Validação e Execução
 try {
     $quantidade = $data->quantidade;
     
-    // 4.1. Busca a categoria da peça para validação
+    // 2. Busca a categoria da peça no banco (necessário para a regra de negócio)
     $stmt_categoria = $pdo->prepare("SELECT PECAS_SER_CATEGORIA FROM tb_pecas_servico WHERE PECAS_SER_ID = ?");
     $stmt_categoria->execute([$id_peca]);
     $peca = $stmt_categoria->fetch(PDO::FETCH_ASSOC);
@@ -49,10 +48,24 @@ try {
     
     $categoria = $peca['PECAS_SER_CATEGORIA'];
 
-    // 4.3. Chamada da Procedure
+    // 3. 🛑 VALIDAÇÃO DE REGRA DE NEGÓCIO: Só permite atualização para categoria 'P' (Peças)
+    if ($categoria !== 'P') { 
+        http_response_code(400);
+        echo json_encode([
+            "success" => false,
+            "message" => "Atualização de estoque só é permitida para Peças (Categoria P)."
+        ]);
+        exit;
+    }
+
+    // 4. Chamada da Procedure
     $stmt = $pdo->prepare("CALL STP_ATUALIZA_ESTOQUE(:id, :quantidade)");
-    $stmt->bindValue(':id', $id_peca, PDO::PARAM_INT); // Usamos o ID da URL
-    $stmt->bindValue(':quantidade', $quantidade, PDO::PARAM_INT);
+    
+    // 💡 CORREÇÃO DE TIPAGEM: Envia a quantidade como STR/FLOAT, garantindo precisão.
+    $quantidade_float = floatval($quantidade); 
+    
+    $stmt->bindValue(':id', $id_peca, PDO::PARAM_INT);
+    $stmt->bindValue(':quantidade', $quantidade_float); // PDO envia o float/number corretamente
 
     $stmt->execute();
 

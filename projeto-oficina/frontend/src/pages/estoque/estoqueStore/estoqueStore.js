@@ -52,8 +52,8 @@ export default function EstoqueStore() {
     } catch (error) {
       if (
         error.response &&
-        error.data.response &&
-        error.data.response.message
+        error.response.data &&
+        error.response.data.message
       ) {
         toast.error(error.response.data.message);
       } else {
@@ -97,10 +97,10 @@ export default function EstoqueStore() {
               <option value="" disabled selected>
                 Categoria
               </option>
-              <option disabled value="SERVICO">
+              <option disabled value="S">
                 Serviço
               </option>
-              <option value="PECAS">Peças</option>
+              <option value="P">Peças</option>
             </newEstoque.Select>
 
             <newEstoque.InputQntd
